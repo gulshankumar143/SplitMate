@@ -1,0 +1,30 @@
+version: '3.9'
+services:
+  server:
+    build: ./server
+    ports:
+      - '5000:5000'
+    env_file:
+      - ./server/.env.example
+    depends_on:
+      - mongo
+  client:
+    build: ./client
+    ports:
+      - '5173:4173'
+    env_file:
+      - ./client/.env.example
+    depends_on:
+      - server
+  mongo:
+    image: mongo:6
+    restart: always
+    environment:
+      MONGO_INITDB_DATABASE: splitmate
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo_data:/data/db
+
+volumes:
+  mongo_data:

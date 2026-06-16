@@ -1,0 +1,11 @@
+{
+  "info": {
+    "name": "SplitMate API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    { "name": "Register", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{ \"name\": \"Test User\", \"email\": \"test@splitmate.app\", \"password\": \"Test1234\" }" }, "url": { "raw": "{{baseUrl}}/auth/register", "host": ["{{baseUrl}}"], "path": ["auth", "register"] } } },
+    { "name": "Login", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{ \"email\": \"test@splitmate.app\", \"password\": \"Test1234\" }" }, "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] } } }
+  ],
+  "variable": [{ "key": "baseUrl", "value": "http://localhost:5000/api" }]
+}
