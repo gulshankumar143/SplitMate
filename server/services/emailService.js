@@ -62,10 +62,14 @@
 
 import { Resend } from 'resend';
 
+console.log("RESEND KEY EXISTS:", !!process.env.RESEND_API_KEY);
+
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export const sendEmail = async (to, subject, text, html) => {
   try {
+    console.log("Sending email to:", to);
+
     const response = await resend.emails.send({
       from: 'SplitMate <onboarding@resend.dev>',
       to,
@@ -73,12 +77,11 @@ export const sendEmail = async (to, subject, text, html) => {
       html: html || `<p>${text}</p>`
     });
 
-    console.log('Email sent successfully');
-    console.log(response);
+    console.log("RESEND RESPONSE:", JSON.stringify(response, null, 2));
 
     return response;
   } catch (error) {
-    console.error('Resend Error:', error);
+    console.error("RESEND ERROR:", error);
     throw error;
   }
 };
