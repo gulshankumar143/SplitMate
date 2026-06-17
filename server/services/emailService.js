@@ -30,69 +30,32 @@ const transporter = isEmailConfigured
 
 export const sendEmail = async (to, subject, text, html) => {
   const message = {
-    from: `"SplitMate" <${EMAIL_USER}>`,
-    replyTo: EMAIL_USER,
+    from: EMAIL_USER,
     to,
     subject,
     text,
     html: html || `<p>${text}</p>`
   };
 
-  if (!isEmailConfigured) {
-    throw new Error('Email service is not configured');
-  }
-
   try {
     console.log('Attempting to send email...');
     console.log('To:', to);
     console.log('Subject:', subject);
 
-    await transporter.verify();
-    console.log('SMTP verified successfully');
+    if (!isEmailConfigured) {
+      throw new Error('Email service is not configured');
+    }
 
     const info = await transporter.sendMail(message);
 
     console.log('Email sent successfully!');
     console.log('Message ID:', info.messageId);
-    console.log('Accepted:', info.accepted);
-    console.log('Rejected:', info.rejected);
-    console.log('Response:', info.response);
 
     return info;
   } catch (error) {
-    console.error('EMAIL ERROR:', error);
+    console.error('EMAIL ERROR:');
+    console.error(error);
+
     throw error;
   }
 };
-
-// export const sendEmail = async (to, subject, text, html) => {
-//   const message = {
-//     from: EMAIL_USER,
-//     to,
-//     subject,
-//     text,
-//     html: html || `<p>${text}</p>`
-//   };
-
-//   try {
-//     console.log('Attempting to send email...');
-//     console.log('To:', to);
-//     console.log('Subject:', subject);
-
-//     if (!isEmailConfigured) {
-//       throw new Error('Email service is not configured');
-//     }
-
-//     const info = await transporter.sendMail(message);
-
-//     console.log('Email sent successfully!');
-//     console.log('Message ID:', info.messageId);
-
-//     return info;
-//   } catch (error) {
-//     console.error('EMAIL ERROR:');
-//     console.error(error);
-
-//     throw error;
-//   }
-// };
