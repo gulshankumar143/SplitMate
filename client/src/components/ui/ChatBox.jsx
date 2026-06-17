@@ -4,7 +4,13 @@ import { motion } from 'framer-motion';
 import { sendChatMessage, fetchChatMessages } from '../../api/chatService.js';
 import { io } from 'socket.io-client';
 
-const socket = io(import.meta.env.VITE_API_URL.replace('/api', ''), { transports: ['websocket'] });
+const API_URL =
+  import.meta.env.VITE_API_URL ||
+  'https://splitmate-backend-ewyn.onrender.com/api';
+
+const socket = io(API_URL.replace('/api', ''), {
+  transports: ['websocket']
+});
 
 const ChatBox = ({ roomId }) => {
   const [message, setMessage] = useState('');
