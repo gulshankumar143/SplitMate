@@ -4,13 +4,23 @@ const EMAIL_HOST = process.env.EMAIL_HOST;
 const EMAIL_PORT = process.env.EMAIL_PORT;
 const EMAIL_USER = process.env.EMAIL_USER;
 const EMAIL_PASS = process.env.EMAIL_PASS;
-const isEmailConfigured = EMAIL_HOST && EMAIL_PORT && EMAIL_USER && EMAIL_PASS;
+
+const isEmailConfigured =
+  EMAIL_HOST &&
+  EMAIL_PORT &&
+  EMAIL_USER &&
+  EMAIL_PASS;
+
+console.log('EMAIL_HOST:', EMAIL_HOST);
+console.log('EMAIL_PORT:', EMAIL_PORT);
+console.log('EMAIL_USER:', EMAIL_USER);
+console.log('Email Configured:', !!isEmailConfigured);
 
 const transporter = isEmailConfigured
   ? nodemailer.createTransport({
       host: EMAIL_HOST,
-      port: EMAIL_PORT,
-      secure: EMAIL_PORT === '465',
+      port: Number(EMAIL_PORT),
+      secure: Number(EMAIL_PORT) === 465,
       auth: {
         user: EMAIL_USER,
         pass: EMAIL_PASS
@@ -20,20 +30,32 @@ const transporter = isEmailConfigured
 
 export const sendEmail = async (to, subject, text, html) => {
   const message = {
-    from: EMAIL_USER || 'no-reply@splitmate.local',
+    from: EMAIL_USER,
     to,
     subject,
     text,
     html: html || `<p>${text}</p>`
   };
 
-  if (!isEmailConfigured) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.warn('Email not configured. Skipping sendMail. Message content:', message);
-      return;
-    }
-    throw new Error('Email service is not configured');
-  }
+  try {
+    console.log('Attempting to send email...');
+    console.log('To:', to);
+    console.log('Subject:', subject);
 
-  await transporter.sendMail(message);
+    if (!isEmailConfigured) {
+      throw new Error('Email service is not configured');
+    }
+
+    const info = await transporter.sendMail(message);
+
+    console.log('Email sent successfully!');
+    console.log('Message ID:', info.messageId);
+
+    return info;
+  } catch (error) {
+    console.error('EMAIL ERROR:');
+    console.error(error);
+
+    throw error;
+  }
 };
